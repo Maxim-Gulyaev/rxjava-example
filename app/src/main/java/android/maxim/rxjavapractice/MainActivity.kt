@@ -23,28 +23,7 @@ class MainActivity : AppCompatActivity() {
         button.setOnClickListener {
             Log.d(TAG, "click click")
         }
-
-        //val observable = Observable.just(1, 4, 7)
-
-        val dispose = dataSource()
-            .subscribeOn(Schedulers.newThread())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                button.text = "next int $it"
-                Log.d(TAG, "next int $it")
-            }, {
-                Log.e(TAG, "it ${it.localizedMessage}")
-            }, {})
     }
-
-   private fun dataSource(): Observable<Int> {
-        return Observable.create { subscriber ->
-            for (i in 0..100) {
-                Thread.sleep(10000)
-                subscriber.onNext(i)
-            }
-        }
-   }
 
 }
 
