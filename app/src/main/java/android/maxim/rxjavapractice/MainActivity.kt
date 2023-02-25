@@ -1,27 +1,34 @@
 package android.maxim.rxjavapractice
 
+import android.maxim.rxjavapractice.databinding.ActivityMainBinding
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.widget.Button
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
-import io.reactivex.rxjava3.core.Scheduler
 import io.reactivex.rxjava3.schedulers.Schedulers
 
 class MainActivity : AppCompatActivity() {
 
-    private val TAG = "tag"
-    private lateinit var button: Button
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        button = findViewById(R.id.button)
+        binding.button.setOnClickListener { doAction() }
+    }
 
-        button.setOnClickListener {
-            Log.d(TAG, "click click")
+    private fun getObservable(): Observable<String> {
+        return Observable.just(binding.editText.text.toString())
+            .subscribeOn(Schedulers.newThread())
+            .map { it.uppercase() }
+            .observeOn(AndroidSchedulers.mainThread())
+    }
+
+    private fun doAction() {
+        getObservable().subscribe {
+            binding.textView.text = it
         }
     }
 
