@@ -5,11 +5,13 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private lateinit var dispose: Disposable
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,9 +29,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun doAction() {
-        getObservable().subscribe {
+        dispose = getObservable().subscribe {
             binding.textView.text = it
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        dispose.dispose()
     }
 
 }
